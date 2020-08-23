@@ -1,9 +1,9 @@
 #	MIP SUMMARIZE
 ---
 ##	Data Representation  
-### Representing Integers  
-#### Unsigned Binary Numbers
-##### Conversion of Binary to Decimal
+1. Representing Integers  
+- Unsigned Binary Numbers
+	- Conversion of Binary to Decimal
 
 ```
 - Let X be a binary number, n digits in length composed of bits X<sub>n-1</sub> ... X<sub>0</sub>  
@@ -16,3 +16,4 @@
 	- Set i = (i+1)
 
 ```
+
