@@ -1,4 +1,6 @@
 #	**MIP SUMMARIZE**
+This paper is the summarization of EN-MIPS_Assembly_Tutorial.pdf on root-me  
+by Daniel J. Ellard
 ---
 ##	**Data Representation**  
 1. **Representing Integers**  
@@ -112,5 +114,45 @@
 		- This program: [palindrome.asm](./Sources/palindrome.asm)
 	- The atoi program
 		These programs will read a line of text from terminal, interpret it as an integer, and then print it out.
-		- ![atoi-1](./ImgSrc/atoi_1_algorithm.png)
-		- 
+		- Algorithm
+		```
+		- Let S be a pointer to start of the string.
+		- Let D be the number.
+		1. Set D = 0.
+		2. Loop:
+			(a) If *S == '\n', then continue with the next step.
+			(b) Otherwise,
+				i. 		S = (S+1)
+				ii.		D = (D x 10)
+				iii.	D = (D + (*S - '0'))
+		```
+		- Program: [atoi.asm](./Sources/atoi_1.asm)
+3.	Function Environments and Linkage
+- The information that describe the state of a function during execution (i.e. the actual parameters, the value of all of the local variables, and which statement is beging executed) is called the *environment* of the function
+- For a MIPS assembly program, the environment of a function consists of the values of all the rigister that are referenced in the function. It uses the stack to store each of the environments.
+- Before a fuction A calls function B, it pushes its enviromnent onto the stack, and then jumps to function B. When the function B returns, function A restores its environment by popping it from the stack.
+	1. The **caller** must:
+	```
+	(a) Put the parameters into $a0-$a3. If there are more than four parameters, the additional parameters are pushed onto the stack.
+	(b)	Save any of the caller-saved registers ($t0 - $t9) which are used by the caller
+	(C)	Execute a jal (or jalr) to jump to the function.
+	```
+	2.	The *callee* must, as part of the function preamble:
+	```
+	(a) Create a stack frame, by subtracting the frame size from the stack pointer ($sp)
+	(b)	Save any callee-saved registers ($s0-$s7, $fp, $ra) which are used by the callee. Note that the frame pointer ($fp) must always be saved. The return address ($ra) needs to be saved only by functions which make function calls themselves.
+	(c)	Set the frame pointer to the stack pointer, plus the frame size.
+	```
+	3.	The **callee** then executes the body of the function
+	4.	To return from a function, the **callee** must:
+	```
+	(a)	Put the return value, if any, into register $v0
+	(b)	Restore callee-saved registers.
+	(c)	Jump back to $ra, using the **jr** instruction 
+	```
+	5.	To clean up after a function call, the **caller** must:
+	```
+	(a) Restore the caller-saved registers.
+	(b)	If any arguments were passed on the stack (instead of in $a0-$a3), pop them off of the stack
+	(c)	Extract the return value, if any, from register $v0.
+	```
