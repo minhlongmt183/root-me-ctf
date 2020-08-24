@@ -73,4 +73,44 @@
 1.	**What is Assembly Language**
 	- Assembly language is very closely related to machine languae, and there is usually a straightforward way to translate programs written in assembly language into machine language.  
 2.	**Getting Started:**
-	- [add.asm](./Sources/add.asm)
+	- 	[Syscall, using syscall and Reading and Printing Integers](./Sources/add.asm)
+	-	[Strings: the hello Program](./Sources/hello.asm)
+	-	Conditional Execution: the larger Program
+		- This is a program that will read two numbers from the user, and print out the larger of the two.  
+		[larger.asm](./Sources/larger.asm)
+	-	Looping: The multiples Program
+		- This program will read two numbers A and B, and print out multiples of A from A to A x B.
+		- Algorithm
+		```
+		1. 	Get A from the user
+		2.	Get B from the user. If B <= 0, terminate.
+		3.	Set sentinel value S = A x B
+		4.	Set multiple m = A
+		5.	Loop:
+			(a)	Print m
+			(b)	If m == S, then go to the next step
+			(c) Otherwise, set m = m + A, and then repeat the loop
+		6. Terminate
+		```
+		Program: [multiple.asm](./Sources/multiples.asm)
+	- Loads:	The palindrome.asm Program
+		- This program will read a line of text and determine whether or not the text is a palindrome.
+		- Algorithm
+		```
+		1.	Let A = S
+		2.	Let B = a pointer to the last character of S. To find the last character in S, use the following algorithm:
+			(a) Let B = S
+			(b)	Loop:
+				- If *B == 0 (i.e. the character at address B is 0), then B has gone past the end of the string. Set B = B - 2 (to move B back past the 0 and the new line), and continue with the next step.
+				- Otherwise, set B = (B+1).
+		3. 	Loop:
+			(a) If A >= B, then the string is a palindrome. Halt.
+			(b)	If *A != *B, then the string is not a palindrome. 
+			(c)	Set A = (A + 1)
+			(d)	Set B = (B - 1)
+		```
+		- This program: [palindrome.asm](./Sources/palindrome.asm)
+	- The atoi program
+		These programs will read a line of text from terminal, interpret it as an integer, and then print it out.
+		- ![atoi-1](./ImgSrc/atoi_1_algorithm.png)
+		- 
