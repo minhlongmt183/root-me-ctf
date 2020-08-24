@@ -156,3 +156,51 @@ by Daniel J. Ellard
 	(b)	If any arguments were passed on the stack (instead of in $a0-$a3), pop them off of the stack
 	(c)	Extract the return value, if any, from register $v0.
 	```
+- **Computing Fibonacci Numbers**
+	- *Using Saved Registers:* 
+		- This program will use callee-saved registers to hold all of the local variables.
+		- [fib-s.asm](./Sources/fib-s.asm)
+	- *Using Temporary Registers:* 
+		- In the fib function in fib-s.asm, half of the function call are leaf calls. It is often unnecessary to go to all of the work of saving all of the reigster in each call to fib, since half the time fib doesn;t call itself again.
+		- We can take advantage of this fact by using caller saved registers instead of callee saved registers. Since it is the responsibility of the caller to save these registers.
+		- [fib-t.asm](./Sources/fib-t.asm)
+	- *Optimization: fib-o.asm*
+		- There are still more tricks we can try in order to increase the performance of this program. 
+		- Half the calls to fib have an argument n of 1 or 0, therefore, do not need to do anything except return a 1, we can simplify the program considerably: this base case doesn't require building a stack frame, or using any registers except $a0 and $v0. Therefore, we can postpone the work of building a stack frame until after we're tested to see if we're going to do the base case.
+		- We can further trum down the number of instructions taht are executed by saving fewer registers.
+		- [fib-o.asm](./Sources/fib-o.asm)
+- **Structures and sbrk: the treesort Program**
+	- The treesort algorithm
+	```
+	1. 	Build an ordered binary tree T containing all the values to be sorted.
+	2.	Do an inorder traversal of T, printing out the values of each node.
+	```
+
+	- Representing Structures
+		- In C, we would use a definition:
+		```c
+		typedef	struct 	_tree_t {
+				int 			val;	/* the value of this node. */
+				struct 	_tree_t *left;	/* pointer to the left child. */
+				Struct 	_tree_t *right; /* pointer to the right child. */
+		} tree_t;
+		```
+		- In MIPS architecture it will require excatly three words (tweleve bytes) to represent this structure: 
+			- a word to represent the val
+			- Another for the left point
+			- The last for the right pointer
+		There fore, we can use a three-word chunk of memory to represent a node, as long as we keep track of what each word in the chunk represents  
+		```assembly
+			#	MIPS assembly:				C equivalent:
+			lw	$s0, 0($t1)				# a = foo->val;
+			lw 	$s1, 4($t1)				# b = foo->left;
+			lw 	$s2, 8($t1)				# c = foo->right;
+
+			sw 	$s0, 0($t1)				# foo->val = a;
+			sw 	$s1, 4($t1)				# foo->left = b;
+			sw 	$s2, 8($t1)				# foo->right = c;
+		```
+
+		- The sbrk syscall
+			- There is a syscall named **sbrk** that can be used to allocated memory
+			- The problrm with sbrk is taht it can only be used to allocate memory, neve to give it back
