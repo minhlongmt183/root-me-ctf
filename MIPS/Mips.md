@@ -1,5 +1,6 @@
 # Challenge ELF MIPS - Basic Crackme on root-me
 you can download binary file in [here](./Bin/ch27.bin)
+I have summarized this tutorial of some file which is attached in root-me in [here](./Mips_summarize.md)
 
 ## LET'S GO
 - First, I tried run this bin file. Unfortunately, this bin file hasn't run. I spent 1 weeks to find how to run it and I failed.
