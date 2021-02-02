@@ -48,6 +48,7 @@ typedef struct {
 ```
 - **e_ident** byte đánh dấu file là 1 object file và cung cấp những dữ liệu độc lập với máy để giải mã và thông dịch nội dung của file.  
 - **e_type** xác định loại object file  
+
 | Name      | Value     | Meaning               |
 | :---:     | :---:     | :---:                 |
 | ET_NONE   | 0         | No file type          |
