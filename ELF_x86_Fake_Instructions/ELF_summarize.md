@@ -60,6 +60,7 @@ typedef struct {
 | ET_HIPROC | 0xffff    | Processor-specific    |  
 
 - **e_machine** giá trị của trường này chỉ định kiến trúc cụ thể mà file yêu cầu.  
+
 | Name      | Value | Meaning       |
 | :---:     | :---: | :---:         |
 | EM_NONE   | 0     | No machine    |
@@ -72,10 +73,12 @@ typedef struct {
 | EM_MIPS   | 8     | MIPS RS3000   |
 
 - **e_version** như tên gọi, trường này xác định version của object file
+
 | Name          | Value | Meaning           |
 | :---:         | :---: | :---:             |
 | EV_NONE       | 0     | Invalid version   |
 | EV_CURRENT    | 1     | Current version   |
+
 Khi có những version cao hơn, nếu cần thiết, giá trị *EV_CURRENT* sẽ thay đổi tương ứng với verison hiện tại.
 - **e_entry**  trường này đưa ra địa chỉ ảo (virtual address) nơi mà hệ thống chuyển quyền điều khiển để bắt đầu tiến trình. Nếu file không có ngõ vào tương ứng, trường này sẽ có giá trị là 0 
 - **e_phoff** phoff là viết tắt của program header table's file offset, nên trường này giữ giá tri của program header table's file offset ở dạng byte.
@@ -89,6 +92,7 @@ Khi có những version cao hơn, nếu cần thiết, giá trị *EV_CURRENT* s
 #### ELF Identification
 - Elf cung cấp một object file framework để hỗ trợ multiple processor, multiple data encoding và multiple classes của máy. Để hỗ trợ cho họ object file này. những byte khởi tạo của file sẽ đặc tả cách thông dịch file, chúng độc lập với bộ xử lí đang thực hiện và phần nội dung còn lại của file. 
 - Những byte khởi tạo này tương ứng với trường e_ident trong cấu trúc ELF header  
+
 | Name          | Vale  | Purpose                   |
 | :---:         | :---: | :---:                     |
 | EI_MAG0       | 0     | File identifcation        | 
@@ -103,13 +107,16 @@ Khi có những version cao hơn, nếu cần thiết, giá trị *EV_CURRENT* s
 
 Những index này trỏ tới những byte lưu các giá trị tương ứng. Chúng ta sẽ tìm hiểu cụ thể ý nghĩa của các index.  
 - **EI_MAG0 - EI_MAG3**: 4 bytes đầu tiên chứa những "magic number" để xác nhận tệp có dạng ELF object. 
+
 | Name      | Value | Position          |
 | :---:     | :---: | :---:             |
 | ELFMAG0   | 0x7f  | e_ident[EI_MAG0]  |
 | ELFMAG1   | 'E'   | e_ident[EI_MAG1]  |
 | ELFMAG2   | 'L'   | e_ident[EI_MAG2]  |
 | ELFMAG3   | 'F'   | e_ident[EI_MAG3]  | 
+
 - **EI_CLASS**: Byte kế tiếp, e_ident[EI_CLASS] nhận diện file class hoặc sức chứa (capacity)
+
 | Name          | Value | Position       |
 | :---:         | :---: | :---:          |
 | ELFCLASSNONE  | 0     | Invalid Class  |
@@ -120,6 +127,7 @@ Những index này trỏ tới những byte lưu các giá trị tương ứng. 
     - **ELFCLASS64** giành cho kiến trúc 64 bit. NÓ cho thấy object file có thể thay đổi kích thước, tuy nhiên định dạng 64-bit không thể xcas định được.
     - Khi cần thiết, có thể định nghĩa thêm những class khác với kiểu dữ liệu và kích thước khác cho object file.
 - **EI_DATA** Byte *e_ident[DI_DATA]* chỉ định cách mã hóa dữ liệu dành riêng cho bộ xử lý trong object file.  
+
 | Name          | Value | Meaning                   |
 | :---:         | :---: | :---:                     |
 | ELFDATANONE   | 0     | Invalid data encoding     |
@@ -129,6 +137,7 @@ Những index này trỏ tới những byte lưu các giá trị tương ứng. 
 - **EI_VERSION**: byte *e_ident[EI_VERSION]* chỉ định số phiên bản của ELF header, thường nó có giá trị là *EV_CURRENT*  
 - **EI_PAD**: Bắt đầu cho chuỗi những byte có không sử dụng trong e_ident. Các byte này được để riêng (reversed) và có giá trị là 0. Giá trị EI_PAD sẽ thay đổi trong tương lai nếu những byte này được sử dụng.  
 - **Machine Information**: Với kiến trúc Intel 32 bit, giá trị file identification trong e_ident sẽ là:  
+
 | Position          | Value         |
 | :---:             | :---:         |
 | e_ident[EI_CLASS] | ELFCLASS32    |
