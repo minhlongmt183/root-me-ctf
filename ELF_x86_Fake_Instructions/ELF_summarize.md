@@ -141,12 +141,96 @@ Những index này trỏ tới những byte lưu các giá trị tương ứng. 
 | Position          | Value         |
 | :---:             | :---:         |
 | e_ident[EI_CLASS] | ELFCLASS32    |
-| e_ient[EI_DATA]   | ELFDATA2LSB   |
+| e_ident[EI_DATA]  | ELFDATA2LSB   |
     - Bộ xử lí nhận e_machine nằm trong ELF header's và phải có giá trị là EM_386 
     - Trong e_flags giữ những bit flag liên kết với tệp. Trường hợp kiến trúc không có flag (như Intel 32 bit) trường này chứa 0.
 
 
 ### Sections
+- Bảng section header là một mảng các cấu trúc Elf32_shdr và một section header table index là một chỉ số con trong mảng đó.  
+- Phần tử *e_shoff* của ELF header đưa ra byte offset từ đầu file đến section header table; *e_shnum* cho ta biets có bao nhiêu entries trong bảng section header và *e_shentsize* cho biết kích thước của mỗi entry.  
+- Một số chỉ mục (indexes) của bảng section header được giữ lại (reserved) và một object file sẽ không có section cho những địa chỉ đặc biệt này.  
+
+| Name          | Value     |
+| :---:         | :---:     |
+| SHN_UNDEF     | 0         |
+| SHN_LORESERVE | 0Xff00    | 
+| SHN_LORPOC    | 0xff00    |
+| SHN_HIPROC    | 0xff1f    |
+| SHN_ABS       | 0xfff1    |
+| SHN_COMMON    | 0xfff2    |
+| SHN_HIRESERVE | 0xffff    |
+
+Trong đó:  
+**SHN_UNDEF**: Đánh dấu các tham chiếu (reference) không xác định, thiếu, vô nghĩa hoặc không liên quan.  
+**SHN_LORESERVE**: giới hạn dưới của reserved indexes  
+**SHN_LOPROC tới SHN_HIPROC**: Các giá trị trong phạm vi này được giành riêng cho ngữ nghĩa cụ thể của bộ xử lý.
+**SHN_ABS**: chỉ định các giá trị tuyệt đối cho hàm tham chiếu tương ứng.  
+**SHN_COMMON**: chỉ rõ các ký hiệu (Symbol) được xác định liên quan đến section này đều là kí hiệu chung.  
+**SHN_HIRESERVE**: giới hạn trên của reserved indexes  
+
+- Section chứa tất cả thông tin của object file, ngoại trừ ELF header, program header table, the section header table. Ngoài ra, section cảu object file còn thỏa mãn một số điều kiện:
+    * Mỗi section trong một object file có chính xác một section header mô tả nó. Section header có thể tồn tại mà không có section.  
+    * Mỗi section chiếm một chuỗi byte liên tiếp (có thể rỗng) bên trong file.
+    * Các section trong một tệp không được trùng lặp, không có byte nào trong tệp nằm nhiều hơn một section.  
+    * Một object file có thể có không gian khồng hoạt động (inactive space). Các headers và sections khác nhau có thể không bao phủ tất cả các byte trong object file và nội dung dữ liệu của inactive space là không xác định được.  
+- Một section header có cấu trúc như sau:
+
+```c
+    typedef struct {
+        Elf32_Word          sh_name;
+        Elf32_Word          sh_type;
+        Elf32_Word          sh_flags;
+        Elf32_Addr          sh_addr;
+        Elf32_Off           sh_offset;
+        Elf32_Word          sh_size;
+        Elf32_Word          sh_link;
+        Elf32_Word          sh_info;
+        Elf32_Word          sh_addralign;
+        Elf32_Word          sh_entsize;
+    } Elf32_Shdr;
+```
+
+Trong đó:  
+    - **sh_name**: Chỉ định tên của section. Giá trị của nó là 1 index trong bảng section header string.  
+    - **sh_type**: giá trị này dùng để phân loại các sections dựa trên nội dung và ngữ nghĩa của nó. 
+    - **sh_flags**: Các section dùng 1 bit này để mô tả các thuộc tính khac   
+    - **sh_addr**: Nếu section xuất hiện trong memmory image of process thì trường này lưu trữ địa chỉ của byte đầu tiên của section, ngược lại nó có giá trị 0.  
+    - **sh_offset**: lưu byte offset từ đầu file đến bye đầu tiên của section.  
+    - **sh_size**: Lưu kích thước section (đơn vị byte). Trường hợp section có type là *SHT_NOBITS*, mắc dù có kích thước khác 0 nhưng nó lại không chiếm không gian trên vùng nhớ.  
+    - **sh_link**: Giữ liên kết chỉ mục của bảng section header, dùng để chỉ định cách thông dịch (intepretation)  
+    - **sh_info**: Lưu thông tin mà thông dịch được.  
+    - **sh_addralign**: Giành cho những ràng buộc về căn chỉnh (alignment constraints). Giá trị 0 và 1 muốn nói section này không có  những ràng buộc ngữ nghĩa.  
+    - **sh_entsize**: Một số section lưu giữ những bảng có số entries là cố định (ví dụ: symbol table), với những section kiểu nayfm *sh_entsize* sẽ cho biết kích thước của mỗi entry trong bảng. Trường hợp file không có những section như trên, *sh_entsize* sẽ có giá trị là 0.
+
+- Nói rõ hơn về trường **sh_type** của section header. Nó bao gồm:
+    
+    | Name | Value |
+    | :--: | :---: |
+    | SHT_NULL | 0 |
+    | SHT_PROGBITS | 1 |
+    | SHT_SYMTAB | 2 | 
+    | SHT_STRTAB | 3 |
+    | SHT_RELA | 4 |
+    | SHT_HASH | 5 |
+    | SHT_DYNAMIC | 6 |
+    | SHT_NOTE | 7 |
+    | SHT_NOBITS | 8 | 
+    | SHT_REL | 9 |
+    | SHT_SHLIB | 10 |
+    | SHT_DYNSYM | 11 |
+    | SHT_LOPROC | 0x70000000 |
+    | SHT_HIPROC | 0x7fffffff |
+    | SHT_LOUSER | 0x80000000 |
+    | SHT_HIUSER | 0xffffffff |
+
+    - **SHT_NULL**: cho thấy section header inactive, nó không có section liên quan và những trường khác của section header cũng không có giá trị xác định (undefined values).  
+    - **SHT_PROGBITS**: giữ những thông tin được định nghĩa bởi chương trình, và chỉ chương trình mới định nghĩa định dạng và ý nghĩa của phần này.  
+    - **SHT_SYMTAB và SHT_DYNSYM**: lưu giữ bảng các symbols (symbols table). Hiện nay, mỗi object file chỉ có một symbol table, tuy nhiên con số này có thể tăng lên trong tương lại.
+    Về cơ bản, *SHT_SYMTAB* cung cấp những symbols để chỉnh sử liên kết. Mặc dù điều này hoàn toàn cỏ thể thực hiện bằng liên kết động (dynamic linking), tuy nhiên trong symbol table, có thể có nhiều symbol không thực sự cần thiết cho liên kết động. Việc này cũng là nguyên nhân có trường *SHT_DYNSYM* là tập tối thiểu chứa các symbol liên kết động để tiết kiện không gian.  
+    
+
+
 ### String Table
 ### Symbol Table
 ### Relocation
