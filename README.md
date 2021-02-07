@@ -7,3 +7,4 @@
 - [x] [ELF MIPS - Basic Crackme](./MIPS/Mips.md)
 - [x] [ELF_x64_Golang_basic](./ELF_x64_Golang_basic/Bin/getflag.py)
 - [x] [ELF x86 - CrackPass]
+- [] [ELF_x86_Fake_Instructions](./ELF_x86_Fake_Instructions)
