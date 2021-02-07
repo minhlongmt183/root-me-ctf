@@ -6,3 +6,4 @@
 - [x] [PE_DotNet_0_protection](./PE_DotNet_0_protection) 
 - [x] [ELF MIPS - Basic Crackme](./MIPS/Mips.md)
 - [x] [ELF_x64_Golang_basic](./ELF_x64_Golang_basic/Bin/getflag.py)
+- [x] [ELF x86 - CrackPass]

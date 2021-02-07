@@ -1,6 +1,7 @@
 # Executable and Linkable Format (ELF)
 - Executable and Linking Format (ELF) được phát triển và công bố bởi USL (UNIX System Laboratories) như là một phần của ABI (Application Binary Interface).  
 - Ủy ban TIS (Tool Interface Standards) đã chọn chuẩn ELF làm định dạng đối tượng di động (portable object ) chạy trên môi trường kiến trúc Intel 32-bit cho nhiều hệ điều hành. 
+
 ---
 ## OBJECT FILES
 ### Introduction
@@ -164,7 +165,7 @@ Những index này trỏ tới những byte lưu các giá trị tương ứng. 
 Trong đó:  
 **SHN_UNDEF**: Đánh dấu các tham chiếu (reference) không xác định, thiếu, vô nghĩa hoặc không liên quan.  
 **SHN_LORESERVE**: giới hạn dưới của reserved indexes  
-**SHN_LOPROC tới SHN_HIPROC**: Các giá trị trong phạm vi này được giành riêng cho ngữ nghĩa cụ thể của bộ xử lý.
+**SHN_LOPROC tới SHN_HIPROC**: Các giá trị trong phạm vi này được giành riêng cho ngữ nghĩa cụ thể của bộ xử lý.  
 **SHN_ABS**: chỉ định các giá trị tuyệt đối cho hàm tham chiếu tương ứng.  
 **SHN_COMMON**: chỉ rõ các ký hiệu (Symbol) được xác định liên quan đến section này đều là kí hiệu chung.  
 **SHN_HIRESERVE**: giới hạn trên của reserved indexes  
@@ -228,9 +229,40 @@ Trong đó:
     - **SHT_PROGBITS**: giữ những thông tin được định nghĩa bởi chương trình, và chỉ chương trình mới định nghĩa định dạng và ý nghĩa của phần này.  
     - **SHT_SYMTAB và SHT_DYNSYM**: lưu giữ bảng các symbols (symbols table). Hiện nay, mỗi object file chỉ có một symbol table, tuy nhiên con số này có thể tăng lên trong tương lại.
     Về cơ bản, *SHT_SYMTAB* cung cấp những symbols để chỉnh sử liên kết. Mặc dù điều này hoàn toàn cỏ thể thực hiện bằng liên kết động (dynamic linking), tuy nhiên trong symbol table, có thể có nhiều symbol không thực sự cần thiết cho liên kết động. Việc này cũng là nguyên nhân có trường *SHT_DYNSYM* là tập tối thiểu chứa các symbol liên kết động để tiết kiện không gian.  
-    
+    - **SH_STRTAB**: giữ string table. Một object file có thể có nhiều string table sections.  
+    - **SHT_RELA**: chứa các mục chuyển vị trí (relocation entries) với các phụ đề rõ ràng. Ví dụ: Elf32_Rela cho lớp 32 bit của object files. Một object file có thể có nhiều relocation sections.  
+    - **SHT_HASH**: Chứa bảng symbol hash. Tất cả những object tham gia vào dynamic linking phải có một bảng symbol hash. Hiện nay, một object file chỉ có thể có một hash table, nhưng con số này có thể tăng lên trong tương lai.  
+    - **SHT_DYNAMIC**: chứa thông tin của dynamic linking. Hiện nay 1 object file cũng chỉ có thể chứa 1 dynamic section, nhưng con số này có thể tăng lên truong tương lai.  
+    - **SHT_NOTE**: chứa thông tin đánh dấu file theo một cách nào đó (và tôi cũng chưa biết cách nào đó là cách gì) 
+    - **SHT_NOBITS**: Giống như SHT_PROGBITS nhưng lại không chiếm không gian trong file. Mặc dù phần này là 0 byte nhưng *sh_offset*  lại chứa offset định nghĩa về nó.  
+    - **SH_REL**: giống như *SH_RELA* nhưng không có các phụ đề rõ ràng. Ví dụ *ELF32_Rel* cho lớp 32 bit của object files. Một object file có thể có nhiều relocation section.  
+    - **SHT_HLIB**: loại section này được giành riêng (reserved) nhưng có ngữ nghĩa không xác định. Chương trình có loại section này thì không cần tuân theo ABI (Application Binary Interface).  
+    - **SHT_LOPROC đến SHT_HI_PROC**: giá trị trong khoảng này được giành riêng cho ngữ nghĩa cụ thể của từng bộ xử lí.  
+    - **SHT_LOUSER**: cận dưới của dải index giành riêng cho các chương trình ứng dụng.  
+    - **SHT_HIUSER**: cận trên của dải index giành riêng cho các chương trình ứng dụng. Những loại section nằm giữa *SHT_LOUSER* và *SHT_HIUSER* có thể được sử dụng bởi ứng dụng mà không bị conflict với những loại section do hệ thống định nghĩa trong hiện tại và tương lai  
+    Những giá trị của các loại section khác được reserved. Như đã nói về sự tồn tại của section header với index 0 (SHN_UNDEF), mặc dù index này đánh dấu cho những undefined section references. Entry này như sau:
 
+    | Name | Value | Note |
+    | :--: | :---: | :---: |
+    | sh_name | 0 | Noname|
+    | sh_type | SHT_NULL | Inactive |
+    | sh_flags | 0 | No flags |
+    | sh_addr | 0 | No address |
+    | sh_offset | 0 | No file offset |
+    | sh_size | 0 | No size |
+    | sh_link | SHN_UNDEF | No link information |
+    | sh_info | 0 | No auxiliary information |
+    | sh_addralign | 0 | No alignment |
+    | sh_entsize | 0 | No entries |
+
+
+    
 
 ### String Table
 ### Symbol Table
 ### Relocation
+
+---
+## PROGRAM LOADING AND DYNAMIC LINKING
+
+---
