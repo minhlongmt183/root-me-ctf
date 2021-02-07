@@ -256,6 +256,7 @@ Trong đó:
     | sh_entsize | 0 | No entries |
 
     - Section header's *sh_flags* dùng 1 bit để mô tả các tính chất của section (on/off)  
+
     | Name | Value |
     | :---: | :---: |
     | SHF_WRITE | 0x1 |
@@ -278,6 +279,7 @@ Trong đó:
 | Other | SHN_UNDEF | 0 |
 
 - **Special Sections**: Nhiều section chứa thông tin của program và control. Một số section sau đây được dùng bởi hệ thống.  
+
 | Name | Type | Attributes |
 | :---: | :---: | :---: |
 | .bss | SHT_NOBITS | SHF_ALLOC + SHF_WRITE |
@@ -304,26 +306,26 @@ Trong đó:
 | .symtab | SHT_SYMTAB | Xem ở dưới |
 | .text | SHT_PROGBITS | SHF_ALLOC + SHF_EXECINSTR | 
 
-**.bss**: Phần này chứa dữ liệu chưa được khởi tạo trong memory image của chương trình. Theo định nghĩa, hệ thống sẽ khởi tạo dữ liệu với giá trị là 0 khi chương trình bắt đầu chạy, và nó không chiếm không gian file, vì có kiểu là *SHT_NOBITS*  
-**.comment**: Lưu trữ thông tin kiểm soát phiên bản (version control).  
-**.data và .data1**: chứa dữ liệu đã được khởi tạo, được sử dụng trong memory image của chương trình.  
-**.debug**: Chứa thông tin cho symbolic debugging. Nội dung này không xác định. 
-**.dynamic**: giữ thông tin về dynamic linking. Thuộc tính ở phần này sẽ bao gồm *SHF_ALLOC* bit.  
-**.dynstr**: giữ những string cần thiết cho dynamic linking. Phổ biến nhất là các string đại diện cho tên được liên kết với các symbol table entries.  
-**.dynsym**: giữa dynamic linking symbol table.  
-**.fini**: giữ những lệnh thực thi góp phần vào mã kết thúc quá trinh. Nghĩa là khi chương trình kết thúc một cách bình thường, hệ thống sẽ thực thi code ở phần này.  
-**.got**: giữa global offset table.  
-**.hash**: giữ symbol hash table.  
-**.init**: giữ những lệnh thực thi cho quá trình khởi tạo. Nghĩa là khi chương trình bắt đầu chạy thì code trong phần này thực thi trước khi vào hàm entry point chính của chương trình.  
-**.interp**: Phần này chứa tên đường dẫn của trình thông dịch chương trình. Nếu file có một phân đoạn có thể tải được phần này thì các thuộc tính của phần này sẽ có cả *SHF_ALLOC bit* nếu không bit này sẽ tắt.  
-**.line**: Giữ thông tin về số dòng cho symbolic debuggin ánh xạ tương ứng giữa source code chương trình với tên mã máy tương ứng. Nội dung không xác định.  
-**.note**: Giữ thông tin có dạng "Note Section"   
-**.plt**: giữ procedure linkage table.  
-**.relname và .relaname** giữ thông tin relocation. Nếu tệp có một phân doạn có thể tải được relocation, các thuộc tính cảu sexction sẽ có cả *SHF_ALLOC* bit, nếu không bit này sẽ tắt. Thông thường, tên được cung cấp bởi khu vực và relocation áp dụng. Do đó, một phần relocation cho .text thông thường có tên .rel.text hoặc .rela.text  
-**.rodata và .rodata1**: giữ những dữ liệu chỉ đọc và khổng thể viết trong process image.  
-**.shstrtab**: giữ các tên của section  
-**.strtab**: giữ các string, phổ biến nhất là các tring đại diện cho tên được liên kết với các symbol table entries. Nếu tệp có một phân đoạn có thể tải được symbol string table, các thuộc tính của section sẽ có thêm *SHF_ALLOC bit*, ngược lại bit này sẽ tắt.  
-**.text**: section này giữ "text" hoặc lệnh thực thi của chương trình.  
+    - **.bss**: Phần này chứa dữ liệu chưa được khởi tạo trong memory image của chương trình. Theo định nghĩa, hệ thống sẽ khởi tạo dữ liệu với giá trị là 0 khi chương trình bắt đầu chạy, và nó không chiếm không gian file, vì có kiểu là *SHT_NOBITS*  
+    - **.comment**: Lưu trữ thông tin kiểm soát phiên bản (version control).  
+    - **.data và .data1**: chứa dữ liệu đã được khởi tạo, được sử dụng trong memory image của chương trình.  
+    - **.debug**: Chứa thông tin cho symbolic debugging. Nội dung này không xác định. 
+    - **.dynamic**: giữ thông tin về dynamic linking. Thuộc tính ở phần này sẽ bao gồm *SHF_ALLOC* bit.  
+    - **.dynstr**: giữ những string cần thiết cho dynamic linking. Phổ biến nhất là các string đại diện cho tên được liên kết với các symbol table entries.  
+    - **.dynsym**: giữa dynamic linking symbol table.  
+    - **.fini**: giữ những lệnh thực thi góp phần vào mã kết thúc quá trinh. Nghĩa là khi chương trình kết thúc một cách bình thường, hệ thống sẽ thực thi code ở phần này.  
+    - **.got**: giữa global offset table.  
+    - **.hash**: giữ symbol hash table.  
+    - **.init**: giữ những lệnh thực thi cho quá trình khởi tạo. Nghĩa là khi chương trình bắt đầu chạy thì code trong phần này thực thi trước khi vào hàm entry point chính của chương trình.  
+    - **.interp**: Phần này chứa tên đường dẫn của trình thông dịch chương trình. Nếu file có một phân đoạn có thể tải được phần này thì các thuộc tính của phần này sẽ có cả *SHF_ALLOC bit* nếu không bit này sẽ tắt.  
+    - **.line**: Giữ thông tin về số dòng cho symbolic debuggin ánh xạ tương ứng giữa source code chương trình với tên mã máy tương ứng. Nội dung không xác định.  
+    - **.note**: Giữ thông tin có dạng "Note Section"   
+    - **.plt**: giữ procedure linkage table.  
+    - **.relname và .relaname** giữ thông tin relocation. Nếu tệp có một phân doạn có thể tải được relocation, các thuộc tính cảu sexction sẽ có cả *SHF_ALLOC* bit, nếu không bit này sẽ tắt. Thông thường, tên được cung cấp bởi khu vực và relocation áp dụng. Do đó, một phần relocation cho .text thông thường có tên .rel.text hoặc .rela.text  
+    - **.rodata và .rodata1**: giữ những dữ liệu chỉ đọc và khổng thể viết trong process image.  
+    - **.shstrtab**: giữ các tên của section  
+    - **.strtab**: giữ các string, phổ biến nhất là các tring đại diện cho tên được liên kết với các symbol table entries. Nếu tệp có một phân đoạn có thể tải được symbol string table, các thuộc tính của section sẽ có thêm *SHF_ALLOC bit*, ngược lại bit này sẽ tắt.  
+    - **.text**: section này giữ "text" hoặc lệnh thực thi của chương trình.  
 - Dễ dàng thấy tên section có tiền tố `.` ở trước và giành riêng cho hệ thống. Tuy nhiên, ứng dụng vẫn có thể sử dụng những chuỗi này. Khi đó, ứng dụng sẽ dùng tên mà không có tiền tố để tránh xung đột với section của hệ thống. Object file format cho phép định nghĩa thêm những section không nằm trong list trên, 1 object file có thể có nhiều hơn 1 section cùng tên.  
 - Tên section giành riêng cho kiến trúc bộ xử lý, được hình thành bằng cách đtặ tên viết tắt của kiến trúc trước tên section. Tên lấy được từ kiến trúc sử dụng cho **e_machine**. Ví dụ `.FOO.psect` được định nghĩa bởi kiến trúc FOO. Các tiện ích mở rông hiện tại được gọi theo tên lịch sử của chúng. 
 
