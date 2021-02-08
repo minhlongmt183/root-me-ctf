@@ -16,9 +16,9 @@
 **File Format**  
 - Object file tham gia vào xây dựng chương trình (program linking) và thực thi chương trình (program executed). Do đó, để thuận tiện và hiệu quả, object file format cung cấp nhiều cách nhiều ở các góc độ khác nhau, tùy thuộc vào những yêu cầu cụ thể.
 ![Object_File_Format](./Images/Object_File_Format.png)  
-- ELF header nằm ở vị trí bắt đầu của file, mô tả cấu trúc, tổ chức của têp tin.
+- ELF header nằm ở vị trí bắt đầu của file, mô tả cấu trúc, tổ chức của tệp tin.
 - Section giữ phần lớn thông tin tệp của các đối tượng, xem ở dạng liên kết: instruction, data, symbol table, relocation information, ...
-- Program header table (nếu tồn tại) chịu trách nhiệm nói cho hê điều hành biết làm sao để tạo môt process image. Những files dùng để xây dựng process image bắt buộc phải có program header table.  
+- Program header table (nếu tồn tại) chịu trách nhiệm nói cho hệ điều hành biết làm sao để tạo một process image. Những files dùng để xây dựng process image bắt buộc phải có program header table.  
 - Section header table chứa thông tin mô tả file's sections. Mỗi section có một entry trong table, và mõi entry sẽ chứa những thông tin như: tên section, kích thước,... Những file được sử dụng trong quá trình linking thì phải có cùng section header table.  
 **Data Representation**  
 - Như nói ở trên, Object file format hỗ trợ các bộ xử lí khác nhau với kiến trúc 4 bytes, 32 bits. HƠn nữa, nó có xu hướng mở rộng đến các kiến trúc lớn hơn (hoặc nhỏ hơn). Do đó, object file trình bày một số control data với format độc lập với máy tính để có thể xác định object files và thông dịch nôi dung của chúng một cách chung nhất. Phần dữ liệu còn lại trong object files sử dụng mã hóa của bộ xử lí đích (target processor).  
@@ -342,12 +342,24 @@ Trong đó:
 | .liblist |
 
 
-
-
-
-    
-
 ### String Table
+- String table sections chứa chuỗi các ký tự kết thúc bằng NULL, chúng ta thường gọi là string.  
+- Object file thường dùng những string này để biểu diễn các symbol và section name. Một tham chiếu đến một chuỗi sẽ có dạng một index trỏ đến string table section.  
+- Byte đầu tiên và byte cuối cùng của string table là kí tự NULL. Một chuỗi chỉ có có index 0 thể hiện đối tượng này không tên, tên rỗng hoặc một ý nghĩa khác tùy thuộc vào ngữ cảnh.  
+- String table cho phép tồn tại empty string. Khi đó, *sh_size* trong section header có giá trị là 0 và những index khác 0 trong bảng sẽ không hợp lệ.  
+- *sh_name* trong section header giữ index trỏ tới section header string table section do *e_shstrndx* chỉ định. Ví dụ như hình sau:  
+
+![StringTableEx.png](./Images/StringTableEx.png)  
+
+![stringTableEx2.png](./Images/stringTableEx2.png)
+
+- Trong ví dụ trên, ta có thể thấy rằng một  index của string table có thể trỏ đến bất kì byte nào trong section. Một string có thể xuất hiện nhiều lần; có thể tham chiếu đén một chuỗi con. Một single string có thể được tham chiếu nhiều lần, và những chuỗi không tham chiếu cũng được chấp nhận.  
+ 
+
+
+
+
+
 ### Symbol Table
 ### Relocation
 
