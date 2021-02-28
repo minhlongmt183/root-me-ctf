@@ -1,4 +1,6 @@
 # Executable and Linkable Format (ELF)
+Tóm tắt nội dung, cách giải bài này đơn giản, tìm đến hàm strcmp so sánh 2 chuỗi, sau khi thực hiện hàm xong, set trực tiếp eax = 0 (fake instruction) rồi thực thi sẽ được flag   
+---
 - Executable and Linking Format (ELF) được phát triển và công bố bởi USL (UNIX System Laboratories) như là một phần của ABI (Application Binary Interface).  
 - Ủy ban TIS (Tool Interface Standards) đã chọn chuẩn ELF làm định dạng đối tượng di động (portable object ) chạy trên môi trường kiến trúc Intel 32-bit cho nhiều hệ điều hành. 
 
